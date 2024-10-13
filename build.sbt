@@ -25,3 +25,7 @@ lazy val root = (project in file("."))
         .map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
     }
   )
+
+libraryDependencies += "com.lihaoyi" %% "upickle" % "3.3.0"
+
+libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.10.1"

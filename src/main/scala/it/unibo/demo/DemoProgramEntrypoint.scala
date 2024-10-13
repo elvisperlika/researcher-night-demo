@@ -15,7 +15,9 @@ import view.fx.{NeighborhoodPanel, NodeStyle, WorldPanel}
 import it.unibo.utils.Position.{*, given}
 import org.bytedeco.javacpp.Loader
 import org.bytedeco.opencv.opencv_java
+import upickle.default.*
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Random
 
@@ -32,16 +34,27 @@ object DemoProgramEntrypoint extends JFXApp3 {
   private val provider = CameraProvider(
     List(6, 1, 2, 3, 5),
     10,
-    4,
+    4
   )
+  
+  /*
   private val robots = List(
     WaveRobot("192.168.8.10", 6),
     WaveRobot("192.168.8.11", 1),
     WaveRobot("192.168.8.12", 2),
     WaveRobot("192.168.8.13", 3),
     WaveRobot("192.168.8.14", 5)
-  )
-  private val update = RobotUpdate(robots, 0.25)
+  ) */
+
+  private val jsonString =
+    os.read(os.pwd / "src" / "main" / "scala" / "it" / "unibo" / "demo" / "configuration" / "waveRobot.json")
+  private val data = ujson.read(jsonString)
+  private var robots = ListBuffer[WaveRobot]()
+  data.arr.map { i =>
+    println(i("ip").str + " " + i("value").num.toInt)
+    robots += WaveRobot(i("ip").str, i("value").num.toInt)
+  }
+  private val update = RobotUpdate(robots.toList, 0.25)
 
   override def start(): Unit =
     val aggregateOrchestrator =
