@@ -31,12 +31,18 @@ object DemoProgramEntrypoint extends JFXApp3 {
   // AllRobotsAlignedProgram()
   // LineFormation(0.4, 5, 0.05)
   // CircleFormation(0.5, 5, 0.05)
+  private val jsonString =
+    os.read(os.pwd / "src" / "main" / "scala" / "it" / "unibo" / "demo" / "configuration" / "waveRobot.json")
+  private val data = ujson.read(jsonString)
+  private val robots = read[Seq[WaveRobot]](data).toList
+  private val list = robots.map(_.id)
+
   private val provider = CameraProvider(
-    List(6, 1, 2, 3, 5),
+    list,
     10,
     4
   )
-  
+
   /*
   private val robots = List(
     WaveRobot("192.168.8.10", 6),
@@ -46,15 +52,7 @@ object DemoProgramEntrypoint extends JFXApp3 {
     WaveRobot("192.168.8.14", 5)
   ) */
 
-  private val jsonString =
-    os.read(os.pwd / "src" / "main" / "scala" / "it" / "unibo" / "demo" / "configuration" / "waveRobot.json")
-  private val data = ujson.read(jsonString)
-  private var robots = ListBuffer[WaveRobot]()
-  data.arr.map { i =>
-    println(i("ip").str + " " + i("value").num.toInt)
-    robots += WaveRobot(i("ip").str, i("value").num.toInt)
-  }
-  private val update = RobotUpdate(robots.toList, 0.25)
+  private val update = RobotUpdate(robots, 0.25)
 
   override def start(): Unit =
     val aggregateOrchestrator =
