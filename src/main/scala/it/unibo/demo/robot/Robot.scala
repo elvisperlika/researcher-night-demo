@@ -36,21 +36,25 @@ case class WaveRobot(ip: String, val id: Int) extends Robot derives ReadWriter:
   private class Command(left: Double, right: Double):
     def toJson: String = URLEncoder.encode(s"""{"T":1, "L":$left, "R":$right}""")
 
-case class TymioRobot(val id: Int) extends Robot derives ReadWriter:
-  override def spinRight(): Unit = ???
-
-  override def spinLeft(): Unit = ???
-
+/**
+ *
+ * @param physicalId is the physical Id
+ * @param id is the arUco Id
+ */
+case class ThymioRobot(val physicalId: String, val id: Int, val name: String) extends Robot derives ReadWriter:
+  override def spinRight(): Unit =
+    requests.get(url = s"http://localhost:52000/thymio?json=${Command(physicalId, +20, -20).toJson}")
+  override def spinLeft(): Unit =
+    requests.get(url = s"http://localhost:52000/thymio?json=${Command(physicalId, -20, +20).toJson}")
   override def forward(): Unit =
-    requests.get(url = s"localhost:52000/thymio?json=${Command(id, +20, +20).toJson}")
+    requests.get(url = s"http://localhost:52000/thymio?json=${Command(physicalId, +20, +20).toJson}")
+  override def backward(): Unit =
+    requests.get(url = s"http://localhost:52000/thymio?json=${Command(physicalId, -20, -20).toJson}")
+  override def nop(): Unit =
+    requests.get(url = s"http://localhost:52000/thymio?json=${Command(physicalId, 0, 0).toJson}")
+  override def intensities(left: Double, right: Double): Unit = {}
 
-  override def backward(): Unit = ???
-
-  override def nop(): Unit = ???
-
-  override def intensities(left: Double, right: Double): Unit = ???
-
-  private class Command(id: Int, left: Double, right: Double):
-    def toJson: String = URLEncoder.encode(s"""{"id":$id, "l":$left, "r":$right}""")
+  private class Command(physicalId: String, left: Double, right: Double):
+    def toJson: String = URLEncoder.encode(s"""{"id":"$physicalId", "l":$left, "r":$right}""")
   
   
