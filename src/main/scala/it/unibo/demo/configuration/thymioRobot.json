@@ -1,10 +1,12 @@
 [
   {
-    "id": 0,
-    "robot_id": "f9622b23-34e5-4a0a-bea6-93f12159013a"
+    "physicalId": "44cdb758-cffc-42f3-ad5e-02262a80fcfc",
+    "id": 5,
+    "name": "beer"
   },
   {
+    "physicalId": "2796a8f2-a495-4901-8402-d6f06f22d7cb",
     "id": 1,
-    "robot_id": "07ad42e4-813a-424e-9d3a-2e6220435879"
+    "name": "rosenblueth"
   }
 ]
