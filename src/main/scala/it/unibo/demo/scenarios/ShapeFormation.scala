@@ -19,7 +19,7 @@ abstract class ShapeFormation(leaderSelected: Int, stabilityThreshold: Double) e
     val local = gradientCast(leader, suggestion, a => a).getOrElse(mid, (0.0, 0.0))
     val distanceTowardGoal = Math.sqrt(local._1 * local._1 + local._2 * local._2)
     val res =
-      if distanceTowardGoal < stabilityThreshold then Rotation(0, 1)
+      if distanceTowardGoal < stabilityThreshold then NoOp
       else Forward((local._1 / distanceTowardGoal, local._2 / distanceTowardGoal))
     println(s"Device ${mid()}: $res")
     res
